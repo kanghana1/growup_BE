@@ -21,6 +21,12 @@ import static com.server.demo.growup.src.todo.dto.TodoRequestDto.*;
 public class TodoController {
 
     private final TodoService todoService;
+
+    @PostMapping
+    public BaseResponse<Todo> saveTodo(@RequestParam String userUuid, @RequestParam String content) {
+        todoService.saveTodo(userUuid, content);
+        return new BaseResponse<>(BaseStatus.SUCCESS);
+    }
     
     @GetMapping("/{todoId}")
     public BaseResponse<List<Todo>> getTodosByCreateAt(@RequestParam("userId") Long userId,
@@ -29,9 +35,23 @@ public class TodoController {
         return new BaseResponse<>(todos);
     }
 
-    @PostMapping
-    public BaseResponse<Todo> saveTodo(@RequestParam String userUuid, @RequestParam String content) {
-        todoService.saveTodo(userUuid, content);
+    @PatchMapping("/{todoId}/status")
+    public BaseResponse<Todo> updateTodoStatus(@PathVariable Long todoId, @RequestBody Boolean isComplete) {
+        Todo todo = todoService.updateTodoStatus(todoId, isComplete);
+        return new BaseResponse<>(todo);
+    }
+
+    @PutMapping("/{todoId}/content")
+    public BaseResponse<Todo> updateTodoContent(@PathVariable Long todoId, @RequestBody String newContent) {
+        Todo todo = todoService.updateTodoContent(todoId, newContent);
+        return new BaseResponse<>(todo);
+    }
+
+    @DeleteMapping("/{todoId}")
+    public BaseResponse<Todo> deleteTodo(@PathVariable Long todoId) {
+        todoService.deleteTodoById(todoId);
         return new BaseResponse<>(BaseStatus.SUCCESS);
     }
+
+
 }

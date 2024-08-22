@@ -32,6 +32,13 @@ public class TodoService {
         return todos;
     }
 
+    public Todo getTodoById(Long todoId) {
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new BaseException(BaseStatus.NOT_FOUND_TODO));
+
+        return todo;
+    }
+
     public List<Todo> getTodoByUserAndCreateAt(Long userId, LocalDate date) {
         User user = userService.getUserByUserId(userId); // 나중에 uuid로 변경
 
@@ -50,6 +57,29 @@ public class TodoService {
         todo.setUser(user);
 
         todoRepository.save(todo);
+    }
+
+    public Todo updateTodoContent(Long todoId, String newContent) {
+        Todo todo = getTodoById(todoId);
+
+        todo.setTodoContent(newContent);
+        todoRepository.save(todo);
+
+        return todo;
+    }
+
+    public Todo updateTodoStatus(Long todoId, Boolean isComplete) {
+        Todo todo = getTodoById(todoId);
+
+        todo.setIsComplete(isComplete);
+        todoRepository.save(todo);
+
+        return todo;
+    }
+
+    public void deleteTodoById(Long todoId) {
+        Todo todo = getTodoById(todoId);
+        todoRepository.delete(todo);
     }
 
 

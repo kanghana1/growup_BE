@@ -36,7 +36,12 @@ public class Todo {
         this.todoContent = content;
     }
 
+    // 이게 필요할까
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setIsComplete(Boolean isComplete) {
+        this.isComplete = isComplete;
     }
 }
