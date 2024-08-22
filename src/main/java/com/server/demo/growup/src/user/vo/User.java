@@ -17,7 +17,7 @@ public class User {
 
     @Id
     @Column(name = "user_idx")
-    private Long userIdx;
+    private Long Id;
 
     @Column(nullable = false, unique = true)
     private String userUuid;
@@ -30,7 +30,7 @@ public class User {
     private Timestamp createdAt;
     private String refreshToken;
     private Timestamp expiration;
-    private boolean isCouple;
+    private Boolean isCouple;
     private String opponentUuid;
 
 
