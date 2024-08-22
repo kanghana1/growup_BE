@@ -5,13 +5,16 @@ import com.server.demo.growup.global.response.BaseStatus;
 import com.server.demo.growup.src.todo.dao.TodoRepository;
 import com.server.demo.growup.src.todo.vo.Todo;
 import com.server.demo.growup.src.user.dao.UserRepository;
+import com.server.demo.growup.src.user.service.UserService;
 import com.server.demo.growup.src.user.vo.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -19,15 +22,35 @@ import java.util.Optional;
 public class TodoService {
 
     private final TodoRepository todoRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public List<Todo> getTodoByUserUuid(String userUuid) {
-        User user = userRepository.findByUserUuid(userUuid)
-                .orElseThrow(() -> new BaseException(BaseStatus.NOT_FOUND_USER));
-
+        User user = userService.getUserByUserUuid(userUuid);
         List<Todo> todos = todoRepository.findByUser(user)
                 .orElse(null);
 
         return todos;
     }
+
+    public List<Todo> getTodoByUserAndCreateAt(Long userId, LocalDate date) {
+        User user = userService.getUserByUserId(userId); // 나중에 uuid로 변경
+
+        // 선택된 날짜의 시작, 끝지점 설정 (00:00:00 / 23:59:59) -> LocalDateTime이용
+        LocalDateTime startDay = date.atStartOfDay();
+        LocalDateTime endDay = date.atTime(LocalTime.MAX);
+
+        return todoRepository.findByUserAndCreateAtBetween(user, startDay, endDay);
+    }
+
+    public void saveTodo(String userUuid, String content) {
+        User user = userService.getUserByUserUuid(userUuid);
+
+        Todo todo = new Todo();
+        todo.setTodoContent(content);
+        todo.setUser(user);
+
+        todoRepository.save(todo);
+    }
+
+
 }

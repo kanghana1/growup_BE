@@ -2,11 +2,13 @@ package com.server.demo.growup.src.todo.vo;
 
 import com.server.demo.growup.src.user.vo.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -16,6 +18,7 @@ public class Todo {
 
     @Id
     @Column(name = "todo_idx")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,7 +26,17 @@ public class Todo {
     private User user;
 
     private String todoContent;
-    private Timestamp createAt;
+
+    @Column(name = "create_at", updatable = false)
+    private LocalDateTime createAt;
+
     private Boolean isComplete;
 
+    public void setTodoContent(String content) {
+        this.todoContent = content;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
